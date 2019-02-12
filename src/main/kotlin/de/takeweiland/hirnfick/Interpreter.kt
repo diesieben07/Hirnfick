@@ -21,8 +21,18 @@ class Interpreter(private val memory: Memory, private val program: String) {
             '<' -> ptr--
             '+' -> memory[ptr]++
             '-' -> memory[ptr]--
-            '.' -> print((memory[ptr].toInt() and 0xFF).toChar())
-            ',' -> memory[ptr] = sysIn.read().toByte()
+            '.' -> {
+                val i = memory[ptr].toInt() and 0xFF
+                if (i != 0) {
+                    print(i.toChar())
+                }
+            }
+            ',' -> {
+                val read = sysIn.read()
+                memory[ptr] = if (read == -1 || read.toChar() == '\n') {
+                    0
+                } else read.toByte()
+            }
             '[' -> {
                 if (memory[ptr].toInt() == 0) {
                     var n = 0
